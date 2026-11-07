@@ -13,6 +13,7 @@ import {
   User,
   UserPlus,
   Users,
+  type LucideIcon,
 } from "lucide-react";
 import { HOME_GAME_QUICK_ACTIONS, HOME_QUICK_ACTIONS } from "@/constants";
 import { AccountSwitcher } from "@/components/accounts/account-switcher";
@@ -77,8 +78,9 @@ export default function Home() {
     ? t("launch.noVersionSelected")
     : selectedInstance?.loader || (config.loadType === "0" ? "Vanilla" : t("home.modLoader"));
 
-  // 获取显示的整合包名称
-  const displayInstanceName = config.loadName || config.versionName || t("launch.noVersionSelected");
+  // 获取显示的整合包名称；未选版本时用引导文案，避免与徽章重复
+  const displayInstanceName =
+    config.loadName || config.versionName || t("home.selectAGameVersionToGetStarted");
 
   // 获取MC版本号（优先从selectedInstance获取，如果没有则从config获取）
   const displayMcVersion = selectedInstance?.minecraft_version || versionName;
@@ -115,12 +117,12 @@ export default function Home() {
       <div className="mx-auto flex min-h-full max-w-[1600px] flex-col gap-4 p-4 md:p-5">
         {homeMode === "full" && (
           <header className="flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <p className="text-xs font-medium text-primary">RTLauncher</p>
-              <h1 className="mt-1 text-xl font-semibold tracking-tight">
+            <div className="min-w-0">
+              <p className="text-xs font-medium tracking-wide text-primary/80">RTLauncher</p>
+              <h1 className="mt-1.5 text-xl font-semibold tracking-tight text-balance">
                 {t("home.welcomeBack")}{selectedProfile?.name ?? t("home.adventurer")}
               </h1>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="mt-1 text-sm text-pretty text-muted-foreground">
                 {t("home.manageYourGameVersionsResourcesAndLaunchStatusHere")}
               </p>
             </div>
@@ -149,7 +151,7 @@ export default function Home() {
               transition={{ delay: 0.1, duration: 0.3 }}
               className="lg:sticky lg:top-0 w-[320px]"
             >
-              <Card className="overflow-hidden border shadow-sm">
+              <Card className="overflow-hidden shadow-sm">
                 <CardHeader className="pb-2">
                   <CardTitle>{t("home.accountsAndCharacters")}</CardTitle>
                   <CardDescription>{t("home.chooseAPlayerAndManageSkinsAndCapes")}</CardDescription>
@@ -225,8 +227,9 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Card className="relative min-h-[280px] overflow-hidden border-primary/20 bg-gradient-to-br from-primary/12 via-card to-card shadow-sm">
+                  <Card className="relative min-h-[280px] overflow-hidden bg-gradient-to-br from-primary/12 via-card to-card shadow-sm ring-primary/25">
                     <div className="pointer-events-none absolute -right-12 -top-16 size-52 rounded-full bg-primary/10 blur-3xl" />
+                    <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
                     <CardContent className="relative flex h-full min-h-[280px] flex-col p-5 sm:p-6">
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0 flex-1">
@@ -245,22 +248,24 @@ export default function Home() {
                                     : t("launch.noVersionSelected")}
                               </Badge>
                             )}
-                            <Badge variant="outline" className="text-muted-foreground">
-                              {loaderName}
-                            </Badge>
+                            {hasSelectedVersion && (
+                              <Badge variant="outline" className="text-muted-foreground">
+                                {loaderName}
+                              </Badge>
+                            )}
                           </div>
                           <h2 className="truncate text-2xl font-semibold tracking-tight">
                             {selectedInstance?.name || displayInstanceName}
                           </h2>
-                          <p className="mt-2 text-sm text-muted-foreground">
+                          <p className="mt-2 text-sm text-pretty text-muted-foreground">
                             {selectedInstance ? (
                               <>
                                 Minecraft {selectedInstance.minecraft_version} · {t("home.modsCountModsInstalled", { modsCount: selectedInstance.mods_count })}
                               </>
+                            ) : hasSelectedVersion ? (
+                              <>Minecraft {displayMcVersion}</>
                             ) : (
-                              <>
-                                Minecraft {displayMcVersion}
-                              </>
+                              t("home.pickAVersionThenLaunchWithOneClick")
                             )}
                           </p>
                         </div>
@@ -323,43 +328,37 @@ export default function Home() {
                   <CardDescription>{t("home.accessCommonFeaturesWithoutNavigatingMultipleMenus")}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid gap-2 sm:grid-cols-2">
-                    {HOME_QUICK_ACTIONS.map(({ href, titleKey, descriptionKey, icon: Icon, iconClassName }) => (
-                      <Link
+                  <div className="grid gap-1.5 sm:grid-cols-2">
+                    {HOME_QUICK_ACTIONS.map(({ href, titleKey, descriptionKey, icon, iconClassName }) => (
+                      <QuickActionLink
                         key={href}
                         href={href}
-                        className="group flex min-w-0 items-center gap-3 rounded-xl border border-transparent p-3 transition-colors hover:border-border hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                      >
-                        <span className={`flex size-9 shrink-0 items-center justify-center rounded-xl ${iconClassName}`}>
-                          <Icon className="size-4" />
-                        </span>
-                        <span className="min-w-0 flex-1">
-                          <span className="block text-sm font-medium">{t(titleKey)}</span>
-                          <span className="block truncate text-xs text-muted-foreground">{t(descriptionKey)}</span>
-                        </span>
-                        <ArrowRight className="size-3.5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-                      </Link>
+                        title={t(titleKey)}
+                        description={t(descriptionKey)}
+                        icon={icon}
+                        iconClassName={iconClassName}
+                      />
                     ))}
                   </div>
 
-                  <div className="h-px bg-border my-2" />
+                  <div className="my-3 flex items-center gap-3">
+                    <div className="h-px flex-1 bg-border" />
+                    <span className="text-[0.6875rem] font-medium uppercase tracking-wider text-muted-foreground/70">
+                      {t("home.instanceResourceOverview")}
+                    </span>
+                    <div className="h-px flex-1 bg-border" />
+                  </div>
 
-                  <div className="grid gap-2 grid-cols-[repeat(auto-fill,minmax(min(200px,100%),1fr))]">
-                    {HOME_GAME_QUICK_ACTIONS.map(({ href, titleKey, descriptionKey, icon: Icon, iconClassName }) => (
-                      <Link
+                  <div className="grid gap-1.5 grid-cols-[repeat(auto-fill,minmax(min(200px,100%),1fr))]">
+                    {HOME_GAME_QUICK_ACTIONS.map(({ href, titleKey, descriptionKey, icon, iconClassName }) => (
+                      <QuickActionLink
                         key={href}
                         href={href}
-                        className="group flex min-w-0 items-center gap-3 rounded-xl border border-transparent p-3 transition-colors hover:border-border hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                      >
-                        <span className={`flex size-9 shrink-0 items-center justify-center rounded-xl ${iconClassName}`}>
-                          <Icon className="size-4" />
-                        </span>
-                        <span className="min-w-0 flex-1">
-                          <span className="block text-sm font-medium">{t(titleKey)}</span>
-                          <span className="block truncate text-xs text-muted-foreground">{t(descriptionKey)}</span>
-                        </span>
-                        <ArrowRight className="size-3.5 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-                      </Link>
+                        title={t(titleKey)}
+                        description={t(descriptionKey)}
+                        icon={icon}
+                        iconClassName={iconClassName}
+                      />
                     ))}
                   </div>
                 </CardContent>
@@ -372,7 +371,7 @@ export default function Home() {
               transition={{ delay: 0.1, duration: 0.3 }}
               className="lg:sticky lg:top-0"
             >
-              <Card className="overflow-hidden border shadow-sm">
+              <Card className="overflow-hidden shadow-sm">
                 <CardHeader className="pb-2">
                   <CardTitle>{t("home.accountsAndCharacters")}</CardTitle>
                   <CardDescription>{t("home.chooseAPlayerAndManageSkinsAndCapes")}</CardDescription>
@@ -462,6 +461,38 @@ export default function Home() {
         </DialogContent>
       </Dialog>
     </div>
+  );
+}
+
+function QuickActionLink({
+  href,
+  title,
+  description,
+  icon: Icon,
+  iconClassName,
+}: {
+  href: string;
+  title: string;
+  description: string;
+  icon: LucideIcon;
+  iconClassName: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className="group flex min-w-0 items-center gap-3 rounded-xl border border-transparent p-2.5 transition-colors duration-150 hover:border-border hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:bg-muted/80"
+    >
+      <span
+        className={`flex size-9 shrink-0 items-center justify-center rounded-xl transition-transform duration-150 group-hover:scale-105 ${iconClassName}`}
+      >
+        <Icon className="size-4" />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-sm font-medium">{title}</span>
+        <span className="block truncate text-xs text-muted-foreground">{description}</span>
+      </span>
+      <ArrowRight className="size-3.5 shrink-0 text-muted-foreground opacity-0 transition-all duration-150 group-hover:translate-x-0.5 group-hover:opacity-100 group-focus-visible:opacity-100" />
+    </Link>
   );
 }
 

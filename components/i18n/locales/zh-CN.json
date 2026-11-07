@@ -252,6 +252,8 @@
     "modsWorldsAndResourcePacks": "模组、存档与资源包",
     "cancelLaunch": "取消启动",
     "launchNow": "立即启动",
+    "selectAGameVersionToGetStarted": "选择一个游戏版本开始",
+    "pickAVersionThenLaunchWithOneClick": "选择版本后即可一键启动游戏。",
     "welcomeBack": "欢迎回来，",
     "adventurer": "冒险者",
     "manageYourGameVersionsResourcesAndLaunchStatusHere": "在这里管理你的游戏版本、资源与启动状态。",
@@ -430,6 +432,12 @@
     "multiplayer": "联机",
     "tools": "工具",
     "settings": "设置"
+  },
+  "titleBar": {
+    "minimize": "最小化",
+    "maximize": "最大化",
+    "restore": "还原",
+    "close": "关闭"
   },
   "diagnostics": {
     "title": "诊断报告",

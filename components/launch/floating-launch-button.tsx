@@ -46,12 +46,13 @@ export function FloatingLaunchButton() {
     t("launch.noVersionSelected")
   );
 
-  // 初始化位置：横轴 1/2、纵轴 1/3（按钮初始为收起态 60×60，居中放置）
+  // 初始化位置：右下角停靠（收起态 60×60），避免遮挡页面主体内容
   useEffect(() => {
     const BTN_SIZE = 60;
+    const EDGE_GAP = 24;
     setPosition({
-      x: window.innerWidth / 2 - BTN_SIZE / 2,
-      y: window.innerHeight / 3 - BTN_SIZE / 2,
+      x: window.innerWidth - BTN_SIZE - EDGE_GAP,
+      y: window.innerHeight - BTN_SIZE - EDGE_GAP,
     });
   }, []);
 
@@ -210,17 +211,17 @@ export function FloatingLaunchButton() {
     >
       {isMinimized ? (
         <motion.div
-           className="w-14 h-14 bg-card border shadow-lg rounded-full flex items-center justify-center"
+           className="flex size-14 items-center justify-center rounded-full bg-card shadow-lg ring-1 ring-foreground/10"
            whileHover={{ scale: 1.1 }}
            whileTap={{ scale: 0.9 }}
          >
            <Play className="size-6 text-primary pointer-events-none" />
          </motion.div>
       ) : (
-        <div className="w-36 bg-card border shadow-lg rounded-lg overflow-hidden flex flex-col">
+        <div className="flex w-36 flex-col overflow-hidden rounded-2xl bg-card shadow-lg ring-1 ring-foreground/10">
                 {/* 标题栏 - 点击收起（作为交互子元素，不触发长按/拖动） */}
                 <div
-                  className="bg-muted px-2 py-1 text-xs font-medium truncate cursor-pointer select-none"
+                  className="cursor-pointer truncate bg-muted px-3 py-1.5 text-xs font-medium select-none"
                   data-no-drag="true"
                   onClick={() => setIsMinimized(true)}
                 >

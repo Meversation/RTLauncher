@@ -5,6 +5,7 @@ import { Copy, Maximize2, Minus, X } from 'lucide-react'
 
 import { ModeToggle } from '@/components/mode-toggle'
 import { Button } from '@/components/ui/button'
+import { useI18n } from '@/components/i18n/use-i18n'
 import { cn } from '@/lib/utils'
 import { ThemeSlot } from '@/components/themes/theme-slot'
 import { useThemeRuntime } from '@/components/themes/theme-runtime-provider'
@@ -77,6 +78,7 @@ function WindowButton({ onClick, title, children, className }: WindowButtonProps
 }
 
 export function TitleBar({ className }: TitleBarProps) {
+  const { t } = useI18n()
   const { slots, snapshot, reportThemeError } = useThemeRuntime()
   const themeSlot = { registry: slots, owner: snapshot.activeOwner, onError: reportThemeError }
   const isMacOS = useSyncExternalStore(
@@ -214,17 +216,20 @@ export function TitleBar({ className }: TitleBarProps) {
             </ThemeSlot>
 
             <div className='flex items-center gap-1 pr-3'>
-              <WindowButton onClick={handleMinimize} title='最小化'>
+              <WindowButton onClick={handleMinimize} title={t('titleBar.minimize')}>
                 <Minus className='size-4' />
               </WindowButton>
 
-              <WindowButton onClick={handleMaximizeRestore} title={isMaximized ? '还原' : '最大化'}>
+              <WindowButton
+                onClick={handleMaximizeRestore}
+                title={isMaximized ? t('titleBar.restore') : t('titleBar.maximize')}
+              >
                 {isMaximized ? <Copy className='size-3.5 rotate-90' /> : <Maximize2 className='size-3.5' />}
               </WindowButton>
 
               <WindowButton
                 onClick={handleClose}
-                title='关闭'
+                title={t('titleBar.close')}
                 className='hover:bg-destructive hover:text-white active:bg-destructive/90 dark:hover:bg-red-600 dark:active:bg-red-700'
               >
                 <X className='size-4' />

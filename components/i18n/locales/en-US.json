@@ -252,6 +252,8 @@
     "modsWorldsAndResourcePacks": "Mods, worlds, and resource packs",
     "cancelLaunch": "Cancel launch",
     "launchNow": "Launch now",
+    "selectAGameVersionToGetStarted": "Select a game version to get started",
+    "pickAVersionThenLaunchWithOneClick": "Pick a version, then launch with one click.",
     "welcomeBack": "Welcome back, ",
     "adventurer": "Adventurer",
     "manageYourGameVersionsResourcesAndLaunchStatusHere": "Manage your game versions, resources, and launch status here.",
@@ -430,6 +432,12 @@
     "multiplayer": "Multiplayer",
     "tools": "Tools",
     "settings": "Settings"
+  },
+  "titleBar": {
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore": "Restore",
+    "close": "Close"
   },
   "diagnostics": {
     "title": "Diagnostics Report",
