@@ -187,17 +187,16 @@ export function FloatingLaunchButton() {
   return (
     <motion.div
       ref={containerRef}
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ 
-        opacity: 1, 
+      initial={false}
+      animate={{
+        opacity: 1,
         scale: 1,
         borderRadius: isMinimized ? '50%' : '0',
         width: isMinimized ? '60px' : '144px',
         height: isMinimized ? '60px' : 'auto'
       }}
-      transition={{ 
-        delay: 0.2, 
-        duration: 0.3,
+      transition={{
+        duration: 0.25,
         type: "spring",
         stiffness: 300,
         damping: 30
