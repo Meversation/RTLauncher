@@ -79,3 +79,7 @@ gen_latest_json.js
 /pr_description
 /packages/theme-cli/dist/
 
+
+# DSH session scratch files
+/.dsh-tmp/
+/.dsh-probe.txt
